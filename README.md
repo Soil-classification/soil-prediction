@@ -1,2 +1,2 @@
-# soil-classification with crop and fertilizer suggestion
-Prediction
+soil-classification with crop and fertilizer suggestion
+
