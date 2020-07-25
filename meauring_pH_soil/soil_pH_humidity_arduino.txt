@@ -1,0 +1,63 @@
+Code for ph sensor and dht11 for Arduino
+
+#include <DHT.h>
+#define DHTPIN 2			// what pin we're connected to
+#define DHTTYPE DHT1			 // DHT 11  (AM2302)
+
+// Initialize DHT sensor for normal 16mhz Arduino
+
+DHT dht(DHTPIN, DHTTYPE);
+
+#define SensorPin A0          
+
+float hum;				//Stores humidity value
+float temp; 				//Stores temperature value
+unsigned long int avgValue; 
+float b;
+int buf[10],temp;
+
+void setup()
+{
+	dht.begin();
+	pinMode(13,OUTPUT);  
+	Serial.begin(9600);  
+	Serial.println("Insert Ph sensor ..."); 
+}
+void loop()
+{ 
+	for(int i=0;i<10;i++)       
+	{ 
+		buf[i]=analogRead(SensorPin);
+		delay(10);
+	}
+	for(int i=0;i<9;i++)           //sort the analog from small to large
+	{
+		for(int j=i+1;j<10;j++)
+		{
+			if(buf[i]>buf[j])
+			{
+				temp=buf[i];
+				buf[i]=buf[j];
+				buf[j]=temp;
+			}
+    		}
+  	}
+  	avgValue=0;
+  	for(int i=2;i<8;i++)                     
+    		avgValue+=buf[i];
+  	float phValue=(float)avgValue*5.0/1024/6; 
+  	phValue=3.5*phValue;                      
+	hum = dht.readHumidity();
+    	temp= dht.readTemperature();
+    
+	//Print temp and humidity values to serial monitor
+    	Serial.print("Humidity: ");
+    	Serial.print(hum);
+    	Serial.print(" %, Temp: ");
+    	Serial.print(temp);
+    	Serial.println(" Celsius");
+	Serial.print("    pH:");  
+	Serial.print(phValue,2);
+	delay(3000);
+ 
+}
